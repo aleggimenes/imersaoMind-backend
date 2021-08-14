@@ -12,6 +12,7 @@ class UserSchema extends Schema {
       table.string('password', 60).notNullable()
       table.string('cpf', 20).notNullable().unique()
       table.string('recovery_token', 100)
+      table.datetime('token_expiration')
       table.string('access_level').notNullable().defaultTo(1)
       .comment('0 - Admin');
       table.integer('saldo').notNullable().defaultTo(50000)

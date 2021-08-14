@@ -18,6 +18,9 @@ const Route = use('Route')
 Route.resource("users", "UserController").apiOnly();
 Route.resource("histories", "HistoryController").apiOnly();
 Route.post("teste", "UserController.auth")
+Route.post("generateToken", "UserController.generateToken")
+Route.post("confirmToken", "UserController.confirmToken")
+Route.post("updatePassword", "UserController.updatePassword")
 Route.get('/', () => {
   return { greeting: 'Hello world in JSON' }
 })
