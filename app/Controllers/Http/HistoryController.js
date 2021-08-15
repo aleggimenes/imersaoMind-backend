@@ -116,8 +116,21 @@ class HistoryController {
   async update({ params, request, response }) {
   }
 
-  async transfer({ params, request, response }) {
-
+  async userTransations({ params, request, auth, response }) {
+    try{
+      const user_sender = auth.getUser();
+      const history = History.query().where('cpf_sender', user_sender.cpf).orWhere('cpf_receiver', user_sender.cpf).fetch()
+      for(var i = 0 ; i < history.rows.length ; i++){
+        if(history.rows[i].cpf_sender === user_sender.cpf){
+          history.rows[i].entrada = 0;
+        }else{
+          history.rows[i].entrada = 1;
+        }
+      }
+      return response.status(200).json(history.rows)
+    }catch(err){
+      return response.status(400).send({err})
+    }
   }
   /**
    * Delete a history with id.

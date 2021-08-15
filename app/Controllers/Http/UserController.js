@@ -48,7 +48,6 @@ class UserController {
       user.save()
       return response.status(200).send('Email enviado');
     } catch (error) {
-      console.log('erro', error);
       return response.status(400).send({ error });
     }
   }
@@ -79,15 +78,16 @@ class UserController {
       const {newPassword} =  request.post();
       user.password = newPassword
       user.save();
+      return response.status(200).send({user});
     }catch(error){
-
+      return response.status(400).send({error})
     }
   }
   async store({ request, response }) {
     try {
       const { name, email, cpf, password } = request.post();
-      const isEmail = await User.findBy('email', email);
-      const isCPF = await User.findBy('cpf', cpf);
+      const isEmail = await User.find('email', email);
+      const isCPF = await User.find('cpf', cpf);
       if (isCPF) {
         return response.status(400).send('CPF ja existe');
       }
@@ -137,16 +137,16 @@ class UserController {
       const isEmail = login.indexOf('@') >= 0;
       if (isEmail) {
         const access = await auth.attempt(login, password);
-        const user = await User.findBy("email", login)
-        return response.send({ user, access });
+        const user = await User.findOrFail("email", login)
+        return response.status(200).send({ user, access });
       } else {
-        const user = await User.findBy("cpf", login);
+        const user = await User.findOrFail("cpf", login);
         const access = await auth.authenticator('cpf').attempt(login, password)
         return response.send({ user, access });
       }
     } catch (err) {
       console.log(err)
-      return response.status(400).send('ruim')
+      return response.status(400).send({err})
     }
   }
   /**
